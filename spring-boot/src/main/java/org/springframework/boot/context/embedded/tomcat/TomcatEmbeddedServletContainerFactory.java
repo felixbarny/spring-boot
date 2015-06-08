@@ -43,6 +43,7 @@ import org.apache.catalina.Valve;
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.loader.WebappLoader;
+import org.apache.catalina.startup.ContextConfig;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.startup.Tomcat.FixContextListener;
 import org.apache.coyote.AbstractProtocol;
@@ -94,7 +95,9 @@ public class TomcatEmbeddedServletContainerFactory extends
 
 	private List<Valve> contextValves = new ArrayList<Valve>();
 
-	private List<LifecycleListener> contextLifecycleListeners = new ArrayList<LifecycleListener>();
+	private List<LifecycleListener> contextLifecycleListeners = new ArrayList<LifecycleListener>() {{
+		add(new ContextConfig());
+	}};
 
 	private List<TomcatContextCustomizer> tomcatContextCustomizers = new ArrayList<TomcatContextCustomizer>();
 

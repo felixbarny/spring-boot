@@ -23,7 +23,11 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import javax.servlet.ServletContainerInitializer;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 
 import org.apache.catalina.Container;
 import org.apache.catalina.Context;
@@ -47,6 +51,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
@@ -323,6 +328,20 @@ public class TomcatEmbeddedServletContainerFactoryTests extends
 		this.container = factory.getEmbeddedServletContainer();
 		Wrapper jspServlet = getJspServlet();
 		assertThat(jspServlet.findInitParameter("a"), is(equalTo("alpha")));
+	}
+
+	@Test
+	public void servletContainerInitializer() {
+		TomcatEmbeddedServletContainerFactory factory = getFactory();
+		this.container = factory.getEmbeddedServletContainer();
+		assertTrue(TestServletContainerInitializer.onStartupCalled);
+	}
+
+	public static class TestServletContainerInitializer implements ServletContainerInitializer {
+		private static boolean onStartupCalled = false;
+		public void onStartup(Set<Class<?>> c, ServletContext ctx) throws ServletException {
+			onStartupCalled = true;
+		}
 	}
 
 	@Override
